@@ -1,0 +1,11 @@
+/DotNET/CoreDto/bin
+/DotNET/CoreDto/obj
+/DotNET/KuivuriWeb/bin
+/DotNET/KuivuriWeb/obj
+/DotNET/NetDto/bin
+/DotNET/NetDto/obj
+/DotNET/packages
+/DotNET/RaspiService/bin
+/DotNET/RaspiService/obj
+/DotNET/KuivuriWeb/Properties/PublishProfiles/*.user
+/DotNET/.vs

@@ -1,0 +1,48 @@
+﻿<html>
+<head>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <script type="text/JavaScript">
+    <!--
+        var getJSON = function (url, callback) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', url, true);
+            xhr.responseType = 'json';
+            xhr.onload = function () {
+                var status = xhr.status;
+                if (status === 200) {
+                    callback(null, xhr.response);
+                } else {
+                    callback(status, xhr.response);
+                }
+            };
+            xhr.send();
+        };
+
+        function ReloadData() {
+            getJSON('api/kuivuri/get12hData',
+                function (err, data) {
+                    if (err == null) {
+                        Plotly.newPlot('myDiv', data, { yaxis: { range: [0, 90] } });
+                    }
+                });
+
+            getJSON('api/kuivuri/getCurrent',
+                function (err, data) {
+                    if (err == null) {
+                        document.getElementById("myText").innerHTML = '' + data.time + " | " + data.temp1 + ' | ' + data.temp2;
+                    }
+                });
+        }
+        setInterval(ReloadData, 30000);
+//   -->
+
+/**/</script>
+</head>
+<body onload="JavaScript:ReloadData();">
+    <font size="6"><div id="myText"></div></font><br />
+    <div id="myDiv"></div>
+    <script type="text/JavaScript">
+    </script>
+</body>
+</html>

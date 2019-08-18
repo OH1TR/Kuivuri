@@ -36,6 +36,7 @@ namespace KuivuriWeb
             }
 
             app.UseMvc();
+            app.UseFileServer();
         }
     }
 }
