@@ -6,6 +6,7 @@ using CoreDto;
 using Dto;
 using KuivuriWeb.DBContext;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace KuivuriWeb.Controllers
 {
@@ -13,6 +14,26 @@ namespace KuivuriWeb.Controllers
     [ApiController]
     public class KuivuriController : ControllerBase
     {
+        private readonly IOptions<Config> config;
+
+        public KuivuriController(IOptions<Config> config)
+        {
+            this.config = config;
+        }
+
+        [HttpPost]
+        [Route("measureData")]
+        public void MeasureData([FromBody] MeasureData value)
+        {
+            if (config.Value.ApiKey != value.ApiKey)
+                return;
+
+            KuivuriContext ctx = new KuivuriContext();
+            var data = new Measurement() { MachineName = value.MachineName, Temp1 = value.Temp1, Temp2 = value.Temp2, Hairio = value.Hairio, Jaahdytys = value.Jaahdytys, Kuivaus = value.Kuivaus };
+            ctx.Measurement.Add(data);
+            ctx.SaveChanges();
+        }
+
         [HttpGet]
         [Route("get12hData")]
         public Trace[] Get12hData()
@@ -48,7 +69,7 @@ namespace KuivuriWeb.Controllers
             var data = ctx.Measurement.OrderByDescending(i => i.Created).First();
 
             if (data != null)
-                return new CurrentValues() { Time = data.Created.FloorSeconds(), Temp1 = data.Temp1, Temp2 = data.Temp2 };
+                return new CurrentValues() { Time = data.Created.FloorSeconds().ToLocalTime(), Temp1 = data.Temp1, Temp2 = data.Temp2 };
 
             return null;
         }

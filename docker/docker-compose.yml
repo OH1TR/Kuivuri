@@ -1,0 +1,11 @@
+version: '2'
+
+services:
+  kuivuri:
+    image: kuivuri
+    container_name: kuivuri
+    ports:
+            - "127.0.0.1:8001:80"
+    volumes:
+      - "/docker/kuivuri/Kuivuri.db:/app/Kuivuri.db"
+    restart: always

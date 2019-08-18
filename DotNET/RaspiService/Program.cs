@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Ports;
@@ -29,7 +30,7 @@ namespace RaspiService
 
             mySerialPort.Open();
 
-            DateTime lastRead = DateTime.Now;
+            DateTime lastRead = DateTime.Now.AddMinutes(-10);
 
             while (true)
             {
@@ -53,7 +54,7 @@ namespace RaspiService
                     }
 
 
-                    if ((DateTime.Now - lastRead).TotalSeconds > 10)
+                    if ((DateTime.Now - lastRead).TotalSeconds > 30)
                     {
                         Console.WriteLine("Sending:DS1820 READ SENSORS");
                         mySerialPort.Write("DS1820 READ SENSORS\r");
@@ -103,7 +104,7 @@ namespace RaspiService
             return (line);
         }
 
-        //OK:10767DB50108009D:0023:0009:103B8BB501080098:003B:000C:FFFFFFFFFFFFFFFF:0000::        
+        //OK:10767DB50108009D:0023:0009:103B8BB501080098:003B:000C:FFFFFFFFFFFFFFFF:0000::
         //DDDNo sensors
         //Error
 
@@ -140,7 +141,7 @@ namespace RaspiService
 
         public static void SendData(double value1, double value2)
         {
-            var baseAddress = "http://192.168.98.51:60017/api/kuivuri/measureData";
+            var baseAddress = "https://www.rouvali.com/kuivuri/api/kuivuri/measureData";
 
             var http = (HttpWebRequest)WebRequest.Create(new Uri(baseAddress));
             http.Accept = "application/json";
@@ -155,6 +156,7 @@ namespace RaspiService
             md.Kuivaus = false;
             md.Jaahdytys = false;
             md.Hairio = false;
+            md.ApiKey = ConfigurationManager.AppSettings["ApiKey"];
 
             string parsedContent = JsonConvert.SerializeObject(md);
 
