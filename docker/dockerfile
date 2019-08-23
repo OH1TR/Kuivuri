@@ -2,4 +2,6 @@ FROM mcr.microsoft.com/dotnet/core/aspnet:2.1
 COPY app/ app/
 ENTRYPOINT ["dotnet", "/app/KuivuriWeb.dll"]
 WORKDIR /app
+ENV TZ=Europe/Helsinki
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 

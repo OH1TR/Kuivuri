@@ -58,6 +58,13 @@ namespace KuivuriWeb.Controllers
                 }
             }
 
+            // Last slot is not always filled.
+            if (values1[values1.Length - 1] == 0)
+                values1[values1.Length - 1] = values1[values1.Length - 2];
+
+            if (values2[values2.Length - 1] == 0)
+                values2[values2.Length - 1] = values2[values2.Length - 2];
+
             return new Trace[] { new Trace() { x = times, y = values1 }, new Trace() { x = times, y = values2 } };
         }
 
