@@ -9,3 +9,6 @@
 /DotNET/RaspiService/obj
 /DotNET/KuivuriWeb/Properties/PublishProfiles/*.user
 /DotNET/.vs
+/Firmware/RaspiKuivuri/.vs/RaspiKuivuri/v14/*.atsuo
+/Firmware/RaspiKuivuri/RaspiKuivuri/Release
+/Firmware/RaspiKuivuri/RaspiKuivuri/src/ASF
