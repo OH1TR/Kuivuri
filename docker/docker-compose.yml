@@ -1,11 +1,13 @@
-version: '2'
-
 services:
   kuivuri:
-    image: kuivuri
+    image: ${REGISTRY}/kuivuri:latest
     container_name: kuivuri
     ports:
-            - "127.0.0.1:8001:80"
+      - "8107:8080"
     volumes:
       - "/docker/kuivuri/Kuivuri.db:/app/Kuivuri.db"
+    environment:
+      # RaspiServicen lahettama ApiKey. Tyhja arvo appsettings.jsonissa hyvaksyy
+      # vain tyhjan avaimen, joten oikea arvo annetaan tassa.
+      - Config__ApiKey=${KUIVURI_API_KEY}
     restart: always

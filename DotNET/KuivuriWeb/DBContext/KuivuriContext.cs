@@ -1,18 +1,23 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace KuivuriWeb.DBContext
 {
     public class KuivuriContext : DbContext
     {
+        public KuivuriContext()
+        {
+        }
+
+        public KuivuriContext(DbContextOptions<KuivuriContext> options) : base(options)
+        {
+        }
+
         public DbSet<Measurement> Measurement { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data Source=Kuivuri.db");
+            if (!optionsBuilder.IsConfigured)
+                optionsBuilder.UseSqlite("Data Source=Kuivuri.db");
         }
     }
 }

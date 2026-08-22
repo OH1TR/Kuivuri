@@ -1,42 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+using KuivuriWeb;
 using KuivuriWeb.DBContext;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
-namespace KuivuriWeb
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllers();
+builder.Services.Configure<Config>(builder.Configuration.GetSection("Config"));
+builder.Services.AddDbContext<KuivuriContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("Kuivuri") ?? "Data Source=Kuivuri.db"));
+
+var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            if (!File.Exists("Kuivuri.db"))
-            {
-                using (var db = new KuivuriContext())
-                {
-                    RelationalDatabaseCreator databaseCreator =
-                        (RelationalDatabaseCreator)db.Database.GetService<IDatabaseCreator>();
-                    databaseCreator.CreateTables();
-                }
-            }
-
-            CreateWebHostBuilder(args).Build().Run();
-        }
-
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                    .ConfigureLogging((hostingContext, logging) =>
-                    {
-                        logging.AddConsole();
-                        logging.AddDebug();
-                    })
-                .UseStartup<Startup>();
-    }
+    scope.ServiceProvider.GetRequiredService<KuivuriContext>().Database.EnsureCreated();
 }
+
+if (app.Environment.IsDevelopment())
+    app.UseDeveloperExceptionPage();
+
+app.UseFileServer();
+app.MapControllers();
+
+app.Run();

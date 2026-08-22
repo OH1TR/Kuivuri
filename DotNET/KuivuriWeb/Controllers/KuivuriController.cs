@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using System.Linq;
-using System.Threading.Tasks;
 using CoreDto;
 using Dto;
 using KuivuriWeb.DBContext;
@@ -15,10 +13,12 @@ namespace KuivuriWeb.Controllers
     public class KuivuriController : ControllerBase
     {
         private readonly IOptions<Config> config;
+        private readonly KuivuriContext ctx;
 
-        public KuivuriController(IOptions<Config> config)
+        public KuivuriController(IOptions<Config> config, KuivuriContext ctx)
         {
             this.config = config;
+            this.ctx = ctx;
         }
 
         [HttpPost]
@@ -28,7 +28,6 @@ namespace KuivuriWeb.Controllers
             if (config.Value.ApiKey != value.ApiKey)
                 return;
 
-            KuivuriContext ctx = new KuivuriContext();
             var data = new Measurement() { MachineName = value.MachineName, Temp1 = value.Temp1, Temp2 = value.Temp2, Hairio = value.Hairio, Jaahdytys = value.Jaahdytys, Kuivaus = value.Kuivaus };
             ctx.Measurement.Add(data);
             ctx.SaveChanges();
@@ -38,8 +37,6 @@ namespace KuivuriWeb.Controllers
         [Route("get12hData")]
         public Trace[] Get12hData()
         {
-            KuivuriContext ctx = new KuivuriContext();
-            DateTime now = DateTime.UtcNow.FloorSeconds();
             DateTime minus12 = DateTime.UtcNow.AddHours(-12);
             DateTime[] times = new DateTime[12 * 60];
             double[] values1 = new double[12 * 60];
@@ -72,8 +69,7 @@ namespace KuivuriWeb.Controllers
         [Route("getCurrent")]
         public CurrentValues GetCurrent()
         {
-            KuivuriContext ctx = new KuivuriContext();
-            var data = ctx.Measurement.OrderByDescending(i => i.Created).First();
+            var data = ctx.Measurement.OrderByDescending(i => i.Created).FirstOrDefault();
 
             if (data != null)
                 return new CurrentValues() { Time = data.Created.FloorSeconds().ToLocalTime(), Temp1 = data.Temp1, Temp2 = data.Temp2 };

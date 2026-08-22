@@ -1,0 +1,7 @@
+**/bin/
+**/obj/
+**/.vs/
+.git/
+Firmware/
+rum-ba/
+*.db

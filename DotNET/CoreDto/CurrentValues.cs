@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System;
 
 namespace CoreDto
 {
     public class CurrentValues
     {
-        public DateTime Time;
-        public double Temp1;
-        public double Temp2;
+        public DateTime Time { get; set; }
+        public double Temp1 { get; set; }
+        public double Temp2 { get; set; }
     }
 }
