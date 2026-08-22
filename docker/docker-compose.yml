@@ -5,9 +5,15 @@ services:
     ports:
       - "8107:8080"
     volumes:
-      - "/docker/kuivuri/Kuivuri.db:/app/Kuivuri.db"
+      # Hakemisto, ei yksittainen tiedosto. SQLite kirjoittaa -wal/-journal-
+      # sivutiedostot kannan viereen, ja niiden on sailyttava kontin yli:
+      # muuten kesken transaktion kaatunutta kantaa ei voi palauttaa.
+      # Yksittaisena tiedostona mountattuna Docker tekisi puuttuvasta
+      # lahteesta viela hakemiston, jolloin sovellus ei kaynnisty lainkaan.
+      - "/docker/kuivuri/data:/data"
     environment:
-      # RaspiServicen lahettama ApiKey. Tyhja arvo appsettings.jsonissa hyvaksyy
+      - ConnectionStrings__Kuivuri=Data Source=/data/Kuivuri.db
+      # RaspiServicen lahettama ApiKey. appsettings.jsonin tyhja arvo hyvaksyisi
       # vain tyhjan avaimen, joten oikea arvo annetaan tassa.
       - Config__ApiKey=${KUIVURI_API_KEY}
     restart: always
