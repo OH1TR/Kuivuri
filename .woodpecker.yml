@@ -3,19 +3,23 @@ when:
     branch: master
 
 steps:
-  # Kuivurin web-image yksityiseen rekisteriin. Osoite on TLS-paate registry.rouva.li
-  # eika sisaverkon HTTP-osoite, koska buildkit ajaa omassa kontissaan eika peri
-  # dockerd:n insecure-registries-listaa. Sama varasto molemmissa paissa.
-  #
-  # Tunnukset tulevat Woodpeckerin globaaleista salaisuuksista, ei repo-tasolta.
+  # Image yksityiseen rekisteriin. Osoite tulee salaisuuksista, jotta sita ei
+  # tarvitse kirjoittaa tahan julkiseen repoon:
+  #   registry_url  = globaali, kirjautumisosoite (TLS-paate)
+  #   registry_repo = repokohtainen, koko imagen nimi ilman tagia
+  # Plugin ei lisaa rekisterin etuliitetta repo-arvoon itse, joten registry_repo
+  # on oltava taydellinen polku. TLS-paatetta kaytetaan siksi, etta buildkit ajaa
+  # omassa kontissaan eika peri dockerd:n insecure-registries-listaa.
   #
   # Dockerfile kaantaa vain KuivuriWeb + CoreDto (net10.0). NetDto ja RaspiService
   # ovat yha .NET Framework 4.0:aa eivatka kuulu imageen.
   - name: kuivuri-image
     image: woodpeckerci/plugin-docker-buildx:6.1.1
     settings:
-      registry: https://registry.rouva.li
-      repo: registry.rouva.li/kuivuri
+      registry:
+        from_secret: registry_url
+      repo:
+        from_secret: registry_repo
       # context on repon juuri, koska lahteet ovat DotNET/-kansiossa.
       dockerfile: docker/Dockerfile
       context: .
