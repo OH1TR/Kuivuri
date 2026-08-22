@@ -1,14 +1,13 @@
-# Rekisterin tunnukset tulevat Woodpeckerin globaaleista salaisuuksista, jotka on
-# rajattu push-tapahtumaan. Siksi tassa ei ole manual-tapahtumaa: kaatunut ajo
-# kaynnistetaan uudelleen restartilla, joka sailyttaa alkuperaisen push-tapahtuman.
 when:
-  - event: push
+  - event: [push, manual]
     branch: master
 
 steps:
   # Kuivurin web-image yksityiseen rekisteriin. Osoite on TLS-paate registry.rouva.li
   # eika sisaverkon HTTP-osoite, koska buildkit ajaa omassa kontissaan eika peri
   # dockerd:n insecure-registries-listaa. Sama varasto molemmissa paissa.
+  #
+  # Tunnukset tulevat Woodpeckerin globaaleista salaisuuksista, ei repo-tasolta.
   #
   # Dockerfile kaantaa vain KuivuriWeb + CoreDto (net10.0). NetDto ja RaspiService
   # ovat yha .NET Framework 4.0:aa eivatka kuulu imageen.
